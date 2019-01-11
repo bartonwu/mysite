@@ -1,0 +1,57 @@
+{% extends 'form.html' %}
+
+{# 填充block other_buttons，该标签来自form.html #}
+{% block other_buttons %}
+    <button id="send_code" type="button" class="btn btn-primary" >发送验证码</button>
+{% endblock %}
+
+{# 填充block script_extends,该标签来自base.html->form.html #}
+{% block script_extends %}
+    <script type="text/javascript">
+        $("#send_code").click(function()
+            {
+                var email_addr = $("#id_email").val();
+                if(email_addr == '')
+                {
+                    $("#error_tip").text('* 邮箱不能为空-from js');
+                    return false;
+                }
+                // 发送验证码，使用ajax方式，调用send_verifi_code页面发送验证码
+                $.ajax({
+                    url: "{% url 'url_send_verifi_code' %}",
+                    type: "GET",
+                    data:{ 'email_addr' : email_addr },  // get请求中将携带的参数
+                    cache: false,
+                    success: function(data){
+                            if(data['status'] == 'ERROR')
+                            {
+                                alert(data['status']);
+                            }
+                        },
+                });
+                //将按钮置灰20秒
+                $("#send_code").addClass('disabled');   //给按钮增加一个不可用属性
+                $("#send_code").attr('disabled', true); //将该不可用属性设成true
+                time = 20;
+                $("#send_code").text('发送验证码 (' + time + 's)');
+                var interval = setInterval(function()
+                            {   //设置定时器
+                                if(time <= 0)
+                                {
+                                    clearInterval(interval);
+                                    $("#send_code").removeClass('disabled');   //去除不可用属性
+                                    $("#send_code").attr('disabled', false);   //将不可用属性设成false
+                                    $("#send_code").text('发送验证码');
+                                    return false;
+                                }
+                                time--;
+                                $("#send_code").text('发送验证码 (' + time + 's)');
+                            }, 1000);   //定时器时间间隔为1000ms
+            }
+        );
+    </script>
+{% endblock %}
+
+
+
+

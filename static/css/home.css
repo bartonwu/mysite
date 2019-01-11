@@ -1,0 +1,16 @@
+.h3_content{
+    font-size: 150%;
+    text-align: center;
+    margin-top: 4em;
+    margin-bottom:2em;
+}
+
+div#container{
+    margin: 0 auto;
+    margin-bottom: 3em;
+    height: 30em;
+    min-width:30em;
+    max-width:40em;  /* highcharts文档中说明，width是根据高度自适应，只需定义最大、最小宽度 */
+
+}
+

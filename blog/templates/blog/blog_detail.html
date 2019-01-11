@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{# 页面标题 #}
+{% block title %}{{ blog.title }}{% endblock %}
+
+{% load staticfiles %}
+{% block head_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/blog.css' %}">
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+{% endblock %}
+
+{# 页面内容 #}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <h3>{{ blog.title }}</h3>
+                <ul class="blog-info-descritpion">
+                    <li>作者：{{ blog.author }}</li>
+                    <li>文章分类：<a href="{% url 'url_blogs_with_type' blog.blog_type.pk %}">{{ blog.blog_type}}</a></li>   <!--url标签所带参数：blog对象下blog_type对象对应的主键值-->
+                    <li>发表日期：{{ blog.created_time|date:"Y-m-d H:i:s" }}</li>
+                    <li>阅读({{ blog.get_read_num }})</li>
+                </ul>
+                <div class="blog-content">{{ blog.content|safe }}</div>
+                <div class="blog-more">
+                    <p>上一篇：
+                        {% if previous_blog %}
+                        <a href="{% url 'url_blog_detail' previous_blog.pk %}">{{ previous_blog.title }}</a>
+                        {% else %}
+                            没有了~
+                        {% endif %}
+                    </p>
+                    <p>下一篇：
+                        {% if next_blog %}
+                        <a href="{% url 'url_blog_detail' next_blog.pk %}">{{ next_blog.title }}</a>
+                        {% else %}
+                            没有了~
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <div class="comment-area">
+                    <h3 class="comment-area-title">提交评论</h3>
+                    {# request请求中自带user信息，前端页面可直接使用 #}
+                    {% if user.is_authenticated %}
+                        <form id="id_comment_form" action="{% url 'url_update_comment' %}" method="POST" style="overflow:hidden">
+                            {% csrf_token %} {# 在form表单里加该标签，防止csrf攻击，只支持render不支持response_to_render #}
+                            <label for="comment_text">{{ user.username }}({{ user.get_nickname }})~，欢迎发表评论：</label>
+                            {% for field in comment_form %}
+                                {{ field }}
+                            {% endfor %}
+                            <span id="id-comment-error" class="text-danger pull-left"></span>
+                            <input class="btn btn-primary pull-right" type="submit" value="提交评论">
+                        </form>
+                    {% else %}
+                        您尚未登录，登录之后方可评论~
+                        {# 点登录后，把当前页面的完整url做为request的from参数传递到登录页面，供登录完成后返回当前页面 #}
+                        <a class="btn btn-primary" href="{% url 'url_login' %}?from={{ request.get_full_path }}">登录</a>
+                        <span>or</span>
+                        <a class="btn btn-danger" href="{% url 'url_register' %}?from={{ request.get_full_path }}">注册</a>
+                    {% endif %}
+                </div>
+                <div class="comment-area">
+                    <h3 class="comment-area-title">评论列表</h3>
+                    <div id="comment-list">
+                        {% for comment in comments %}
+                        <div class="comment-list">
+                            <span>{{ comment.comment_user.username }}</span>
+                            <span>({{ comment.comment_time|date:"Y-m-d H:i:s" }})：</span>
+                            <span>{{ comment.comment_text|safe }}</span>
+                        </div>
+                        {% empty %}
+                        <div>暂时没有评论</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{# 此处block用来扩展script #}
+{% block script_extends %}
+    <script type="text/javascript">
+        $("#id_comment_form").submit(function(){
+            // 清掉错误提示信息
+            $("#id-comment-error").text('');
+
+            // 判断评论内容是否为空
+            if(CKEDITOR.instances['id_text'].document.getBody().getText().trim() == '')
+            {   $("#id-comment-error").text('评论内容不能为空');
+                return false;
+            }
+
+            // 更新数据到textarea
+            CKEDITOR.instances["id_text"].updateElement()
+
+            //异步提交
+            $.ajax({
+                url: "{% url 'url_update_comment' %}" , //向哪个url提交post请求
+                type: "POST",
+                data: $("#id_comment_form").serialize(),  //将form表单中的值序列化，做为post请求的数据参数
+                cache: false,
+                success: function(data){    // 该data是后台response回来的数据
+                        console.log(data);
+                        // 异步提交数据成功后，在前端页面插入并显示该数据
+                        if(data['status'] == "SUCCESS")
+                        {   var comment_html = '<div>' + data['username'] + '(' +  data['comment_time']  + ')' + data['text'] + '</div>';
+                            $("#comment-list").prepend(comment_html);
+                            // 清空编辑框、错误提示框的内容
+                            CKEDITOR.instances["id_text"].setData('')
+                        }
+                        else
+                        {   // 显示错误信息
+                            $("#id-comment-error").text(data['message']);
+                        }
+                    },
+                error: function(xhr){
+                        console.log(xhr);
+                    },
+            });
+            return false;   // 阻止submit直接提交
+        });
+    </script>
+{% endblock %}
+
+{# 导航栏元素激活标记 #}
+{% block nav_blog_active %}active{% endblock %}

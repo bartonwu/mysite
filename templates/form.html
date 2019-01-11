@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{# 这是一个通用模版 #}
+{# 页面标题 #}
+{% block title %} {{ page_title }} {% endblock %}
+
+
+{# 页面内容 #}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-4 col-xs-offset-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{{ form_title }}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form action="" method="POST">
+                            {% csrf_token %} {# 在form表单里加该标签，防止csrf攻击，只支持render不支持response_to_render #}
+                            {% for field in form %}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                <p class="text-danger">{{ field.errors.as_text }}</p>
+                            {% endfor %}
+                            <span id="error_tip" class="pull-left text-danger">{{ form.non_field_errors }}</span>
+                            <div class="clearfix"></div>
+                            <div class="pull-left">
+                                {% block other_buttons %}{% endblock %}
+                            </div>
+                            <div class="pull-right">
+                                <input class="btn btn-primary" type="submit" value="{{ submit_text }}">
+                                <button class="btn btn-default" type="button" onclick="window.location.href='{{ return_back_url }}'">返回</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block nav_home_active %}
+    active
+{% endblock %}

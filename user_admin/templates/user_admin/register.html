@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{# 页面标题 #}
+{% block title %} 我的网站|注册 {% endblock %}
+
+{# 页面内容 #}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-4 col-xs-offset-4">
+                {% if not user.is_authenticated %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">注册</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form action="" method="POST">
+                            {% csrf_token %} {# 在form表单里加该标签，防止csrf攻击，只支持render不支持response_to_render #}
+                            {% for field in reg_form %}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                <p class="text-danger">{{ field.errors.as_text }}</p>
+                            {% endfor %}
+                            <span class="pull-left text-danger">{{ login_form.non_field_errors }}</span>
+                            <input class="btn btn-primary pull-right" type="submit" value="注册">
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <h4>已登录，从register页跳转到首页...</h4>
+                <script type="text/javascript">
+                    // 显示提示信息1秒，后开始跳转
+                    setTimeout(function(){window.location.href = '/'; }, 1000);
+                </script>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block nav_home_active %}
+    active
+{% endblock %}

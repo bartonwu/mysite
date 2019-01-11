@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{# 页面标题 #}
+{% block title %}
+    我的网站|首页
+{% endblock %}
+
+{% block head_extends %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+{% endblock %}
+
+{# 页面内容 #}
+{% block content %}
+    <h3 class="h3_content">欢迎访问我们的网站，随便看看</h3>
+
+    <!-- 图表容器 DOM -->
+    <div id="container"></div>
+        <script>
+        // 图表配置
+        var options = {
+            chart: { type: 'line' },                        //图表的类型，默认是折线图（line）
+            title: { text: null },                          //图表标题，设置为不显示
+
+            xAxis: { categories: {{ dates|safe }},          // x 轴分类数据源，返回结果中存在单引号，需要信任
+                     tickmarkPlacement: 'on',               // x轴刻度显示有关，具体可查文档
+                     title:{text: '前7日阅读量变化' },       // x轴标题
+                    },
+            yAxis: { title: { text: null },                  // y 轴标题，设置为不显示
+                     labels:{ enabled:false },              // y 轴标签不显示
+                     gridLineDashStyle:'Dash',
+                    },
+            series: [{                                      // 数据列
+                        name: '阅读量',                 // 数据列名
+                        data: {{ blog_read_nums_of_7days }} // 数据源
+
+                    }],
+            plotOptions: {                                  //开启数据标签
+                        line: { dataLabels: { enabled: true } }
+                     },
+            credits: {
+                        // 版权信息，enabled 默认值 True，如果想去掉版权信息，设置为false即可
+                        text: '这里是版权信息',             // 显示的文字
+                        href: '#',      // 链接地址
+                    },
+            legend: { enabled: false }      //关闭图例
+            };
+            // 图表初始化函数
+            var chart = Highcharts.chart('container', options);
+        </script>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">今日热门点击</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                        {% for hot_data in hot_datas_today %}
+                            <li>
+                                <a href="{% url 'url_blog_detail' hot_data.content_object.id %}">{{ hot_data.content_object.title|truncatechars:16 }}({{ hot_data.read_num }})</a>
+                            </li>
+                        {% empty %}
+                            <li>今天暂时没有热门博客</li>
+                        {% endfor %}
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden-xs col-sm-6 col-md-4 col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">昨日热门点击</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for hot_data in hot_datas_yesterday %}
+                                <li>
+                                    <a href="{% url 'url_blog_detail' hot_data.content_object.id %}">{{ hot_data.content_object.title }}({{ hot_data.read_num }})</a>
+                                </li>
+                            {% empty %}
+                                <li>昨天暂时没有热门博客</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden-xs hidden-sm col-md-4 col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">昨日热门点击</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for hot_blog in hot_blogs_7days %}
+                                <li>
+                                    <a href="{% url 'url_blog_detail' hot_blog.id %}">{{ hot_blog.title }}( {{ hot_blog.read_num_sum }} )</a>
+                                </li>
+                            {% empty %}
+                                <li>最近7天暂时没有热门博客</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden-xs hidden-sm hidden-md col-lg-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">昨日热门点击</h3>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for hot_blog in hot_blogs_30days %}
+                                <li>
+                                    <a href="{% url 'url_blog_detail' hot_blog.id %}">{{ hot_blog.title }}( {{ hot_blog.read_num_sum }} )</a>
+                                </li>
+                            {% empty %}
+                                <li>最近30天暂时没有热门博客</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block nav_home_active %}
+    active
+{% endblock %}
