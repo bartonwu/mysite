@@ -11,4 +11,8 @@ creating a new branch is quick and simple
 
 A new modify
 
+<<<<<<< HEAD
 issue-101 fix bug 
+=======
+feature-vulcan
+>>>>>>> dev
