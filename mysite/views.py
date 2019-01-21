@@ -1,7 +1,7 @@
 import datetime
 from django.utils import timezone
 from django.db.models import Sum
-from django.shortcuts import render
+from django.shortcuts import render, render_to_response
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from read_statistics import utils
@@ -71,4 +71,14 @@ def home(request):
     context['hot_blogs_30days'] = hot_blogs_30days
     return render(request, 'home.html', context)
 
+
+# 自定义404页面
+def page_not_found(request, exception):
+    #return render(request, '404.html', {})
+    return render_to_response('404.html')
+
+# 自定义500页面
+# def page_error(request, exception):
+#     #return render(request, '500.html', {})
+#     return render_to_response('500.html')
 

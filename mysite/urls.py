@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+# from django.conf.urls import handler404, handler500
 # from django.conf import settings
 # from django.conf.urls.static import static
 from . import views
@@ -29,5 +30,9 @@ urlpatterns = [
     # 设置ckeditor url
     # path('ckeditor/', include('ckeditor-uploader.urls')),
 ]
+
+# 自定义404、500页面
+handler404 = 'mysite.views.page_not_found'
+# handler500 = 'mysite.views.page_error'
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

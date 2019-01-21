@@ -26,7 +26,7 @@ ALLOWED_HOSTS = ['*']
 
 # Database
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
-DATABASE_PASSWORD = os.environ['DATABASE_PASSWORD ']    # 数据库密码，从生产环境环境变量中获取
+DATABASE_PASSWORD = os.environ['DATABASE_PASSWORD']    # 数据库密码，从生产环境环境变量中获取
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -45,7 +45,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.qq.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = '275799285@qq.com'
-EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD ']    # 授权码，从生产环境环境变量中获取
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']    # 授权码，从生产环境环境变量中获取
 EMAIL_SUBJECT_PREFIX = '[From mysite]'    # 邮件主题前缀
 EMAIL_USE_TLS = True    # 与SMTP服务器通信时，是否启用TSL链接(安全链接)
 
