@@ -3,3 +3,4 @@ settings.py
 __pycache__/
 *.json
 *.sql
+static_collected/
