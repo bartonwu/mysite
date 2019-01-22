@@ -14,3 +14,19 @@ ul{
 ul.navbar-right{
     margin-right: 0;
 }
+
+div.footer{
+   margin-top: 3em;
+   background-color: #eee;
+   color: #888;
+}
+
+div.foot-info{
+    text-align: center;
+    padding-top: 2em;
+    padding-bottom: 1.5em;
+}
+
+div.foot-info p{
+    margin-bottom: 0;
+}

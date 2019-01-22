@@ -16,6 +16,7 @@
     {% block head_extends %}{% endblock %}
 </head>
 <body>
+    <!--导航栏-->
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -59,7 +60,17 @@
             </div>
         </div>
     </div>
+
+    <!--页面Content-->
     {% block content %}{% endblock %}
     {% block script_extends %}{% endblock %}
+
+    <!--页面底部-->
+    <div class="footer">
+        <div class="foot-info">
+            <p>粤ICP备88888888号 Copyright@2018 wuchuang.xyz 版本所有</p>
+            <p>意见反馈或联系我(275799285@qq.com)</p>
+        </div>
+    </div>
 </body>
 </html>
