@@ -106,5 +106,5 @@ def blog_detail(request, blog_id):  # blog_pk = blog_id,blog主键
     # response = render_to_response('blog/blog_detail.html', context)
     response = render(request, 'blog/blog_detail.html', context) # 推荐使用render,render方法中带有request参数，已包含user信息
     # setcookie不设置max_age(最长有效期)或expires(过期时间)时，默认关闭浏览器后失效
-    response.set_cookie(cookie_key, 'true') # 阅读标记cookie置true
+    response.set_cookie(cookie_key, 'true', max_age=20) # 阅读标记cookie置true
     return response

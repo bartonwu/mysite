@@ -58,5 +58,3 @@ def get_yesterday_hot_datas(content_type):
     read_details = ReadDetail.objects.filter(content_type=content_type, date=yesterday). \
                                             order_by("-read_num")  # 以read_num倒序
     return read_details[:7]    # 切片器，截取前7条数据
-
-
